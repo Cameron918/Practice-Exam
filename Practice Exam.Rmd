@@ -1,0 +1,25 @@
+---
+title: "Practice Exam"
+author: "Cameron Pak"
+date: "2/27/2020"
+output: rmarkdown::github_document
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(nycflights13)
+library(reshape2)
+myweather <- weather %>% mutate(day_of_year = yday(time_hour))
+myweather <-
+  myweather %>% mutate(Date = paste(month, day, "2013", sep = "/"))
+myweather$Date <- as.Date(myweather$Date, "%m/%d/%Y")
+mytemp <-
+  myweather %>% group_by(origin, Date) %>% summarise(temp = mean(temp))
+ggplot(mytemp, aes(x = Date, y = temp)) + geom_bar(stat = 'identity', fill = "forest green") + facet_wrap(~ origin, ncol = 1)
+df.wide <- pivot_wider(mytemp, names_from = Date,values_from = temp)
+myflights <-
+  flights %>% mutate(Date = paste(month, day, "2013", sep = "/"))
+myflights$Date <- as.Date(myflights$Date, "%m/%d/%Y")
+# myflights$Performance <- myflights$dep_delay < 60
+```
